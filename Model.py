@@ -20,8 +20,8 @@ class Product(Base):
     main_img4 = Column(String())
     main_img5 = Column(String())
     main_img6 = Column(String())
-    propertyValueDisplayName=Column(String(),nullable=False) #skuPropertyName : propertyValueDisplayName
-    properties = Column(String())
+    propertyValueDisplayName=Column(String(),nullable=False) #skuPropertyName : propertyValueDisplayName sku 价格，属性，数量
+    properties = Column(String()) #属性
     detail_img1=Column(String, nullable=False)
     detail_img2=Column(String)
     detail_img3 = Column(String)

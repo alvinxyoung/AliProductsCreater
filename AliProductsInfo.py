@@ -5,12 +5,12 @@ import requests
 driver = webdriver.Chrome()
 driver.get('https://www.aliexpress.com')
 
+
 class AliDownloader():
     def __init__(self):
         pass
 
-    @staticmethod
-    def get_main_images():
+    def get_main_images(self):
         main_urls = []
         image_list=driver.find_element_by_class_name("images-view-list")
         lis = image_list.find_elements_by_tag_name("img")
@@ -23,8 +23,7 @@ class AliDownloader():
             main_urls.append(image_url)
         return main_urls
 
-    @staticmethod
-    def get_sku_images():
+    def get_sku_images(self):
         sku_urls=[]
         sku_box = driver.find_element_by_class_name("sku-property-list")
         lis = sku_box.find_elements_by_tag_name("img")
@@ -37,6 +36,21 @@ class AliDownloader():
             sku_urls.append(image_url)
         return sku_urls
 
+    def get_title(self):
+        ele = driver.find_element_by_class_name('product-title')
+
+
+    def get_properties(self):
+        pass
+
+    def get_catalog_id(self):
+        pass
+
+    def get_product_id(self):
+        pass
+
+    def get_propertyValueDisplayName(self):
+        pass
 
 def roll():
     js = "window.scrollBy(0,500)"
