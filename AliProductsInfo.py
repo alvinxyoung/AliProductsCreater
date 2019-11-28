@@ -1,6 +1,7 @@
 from selenium import webdriver
 import time
 import requests
+import re
 
 driver = webdriver.Chrome()
 driver.get('https://www.aliexpress.com')
@@ -38,13 +39,17 @@ class AliDownloader():
 
     def get_title(self):
         ele = driver.find_element_by_class_name('product-title')
-
+        return ele
 
     def get_properties(self):
         pass
 
     def get_catalog_id(self):
-        pass
+        p = re.compile('"categoryId":(\d+)')
+        page_source=driver.page_source
+        res=p.search(page_source)
+        if res :
+            return int(res.groups()[0])
 
     def get_product_id(self):
         pass
