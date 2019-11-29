@@ -2,6 +2,7 @@ from selenium import webdriver
 import time
 import requests
 import re
+import json
 
 driver = webdriver.Chrome()
 driver.get('https://www.aliexpress.com')
@@ -42,7 +43,11 @@ class AliDownloader():
         return ele
 
     def get_properties(self):
-        pass
+        pattern = '"props":(.+])'
+        res = re.search(pattern, driver.page_source)
+        if res:
+            j = json.loads(res.groups()[0])
+            return j
 
     def get_catalog_id(self):
         p = re.compile('"categoryId":(\d+)')
