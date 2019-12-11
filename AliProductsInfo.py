@@ -10,7 +10,14 @@ driver.get('https://www.aliexpress.com')
 
 class AliDownloader():
     def __init__(self):
-        pass
+        self.url = None
+
+    def set_product_url(self, url):
+        pattern = r'http[s]?://www.aliexpress.com.+?\d+\.html'
+        if re.match(pattern, url):
+            self.url = url
+        else:
+            raise Exception("product url not match! exp: http[s]?://www.aliexpress.com.+?\d+\.html")
 
     def get_main_images(self):
         main_urls = []
@@ -57,7 +64,16 @@ class AliDownloader():
             return int(res.groups()[0])
 
     def get_product_id(self):
-        pass
+        ptn = r'http[s]?://www.aliexpress.com.+?(\d+)\.html'
+        res = re.search(ptn, self.url)
+        if self.url != None:
+            if res:
+                product_id = res.groups()[0]
+                return int(product_id)
+            else:
+                raise Exception("can not find product id, please check product url")
+        else:
+            raise Exception("url is not set")
 
     def get_propertyValueDisplayName(self):
         pass
