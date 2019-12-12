@@ -76,6 +76,7 @@ class AliDownloader():
             raise Exception("url is not set")
 
     def get_propertyValueDisplayName(self):
+        '\[{"isShow'
         pass
 
 def roll():
