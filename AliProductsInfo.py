@@ -9,8 +9,9 @@ driver.get('https://www.aliexpress.com')
 
 
 class AliDownloader():
-    def __init__(self):
+    def __init__(self, driver):
         self.url = None
+        self.driver = driver
 
     def set_product_url(self, url):
         pattern = r'http[s]?://www.aliexpress.com.+?\d+\.html'
@@ -21,7 +22,7 @@ class AliDownloader():
 
     def get_main_images(self):
         main_urls = []
-        image_list=driver.find_element_by_class_name("images-view-list")
+        image_list=self.driver.find_element_by_class_name("images-view-list")
         lis = image_list.find_elements_by_tag_name("img")
         print("there are %d main pictures" % len(lis))
         for i in lis:
@@ -34,7 +35,7 @@ class AliDownloader():
 
     def get_sku_images(self):
         sku_urls=[]
-        sku_box = driver.find_element_by_class_name("sku-property-list")
+        sku_box = self.driver.find_element_by_class_name("sku-property-list")
         lis = sku_box.find_elements_by_tag_name("img")
         print("there are %d color pictures" % len(lis))
         for i in lis:
@@ -46,19 +47,19 @@ class AliDownloader():
         return sku_urls
 
     def get_title(self):
-        ele = driver.find_element_by_class_name('product-title')
+        ele = self.driver.find_element_by_class_name('product-title')
         return ele
 
     def get_properties(self):
         pattern = '"props":(.+])'
-        res = re.search(pattern, driver.page_source)
+        res = re.search(pattern, self.driver.page_source)
         if res:
             j = json.loads(res.groups()[0])
             return j
 
     def get_catalog_id(self):
         p = re.compile('"categoryId":(\d+)')
-        page_source=driver.page_source
+        page_source=self.driver.page_source
         res=p.search(page_source)
         if res :
             return int(res.groups()[0])
@@ -76,8 +77,13 @@ class AliDownloader():
             raise Exception("url is not set")
 
     def get_propertyValueDisplayName(self):
-        '\[{"isShow'
-        pass
+        '"productSKUPropertyList",   "skuPriceList",     "warrantyDetailJson"'
+        page_source=self.driver.page_source
+        productSKUPropertyList_re = re.compile('"productSKUPropertyList":(\[{.+?}\])')
+        if productSKUPropertyList_re.search(page_source):
+            productSKUPropertyList=productSKUPropertyList_re.groups()[0]
+
+
 
 def roll():
     js = "window.scrollBy(0,500)"
