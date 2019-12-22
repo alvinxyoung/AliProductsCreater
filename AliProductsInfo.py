@@ -94,13 +94,21 @@ class AliDownloader():
         if res:
             skuPriceList = json.loads(res.groups()[0])
         self._color_size(productSKUPropertyList)
+        self._sku(skuPriceList)
+        return properlist
 
     def _color_size(self,productlist=[]):
         length = len(productlist)
         if length==2:
-            for i in productlist:
-                property1 = i.get('skuPropertyName')
-                
+            property1 = productlist[0].get('skuPropertyName')
+            property2 = productlist[1].get('skuPropertyName')
+            if property1=="Color":
+                pass
+            if property2=="Size":
+                pass
+
+    def _sku(self, skuPriceList):
+        pass
 
 
 
