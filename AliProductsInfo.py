@@ -79,9 +79,9 @@ class AliDownloader():
     def get_propertyValueDisplayName(self):
         '"productSKUPropertyList",   "skuPriceList",     "warrantyDetailJson"'
         properlist={
-            "type":"",
-            "color":[],
-            "size":[],
+            "type":"",#color, size, colorsize
+            "color":[],#("propertyValueDisplayName","propertyValueName","propertyValueId")
+            "size":[],#("propertyValueDisplayName","propertyValueName","propertyValueId")
             "sku":[]
         }
         page_source = self.driver.page_source
