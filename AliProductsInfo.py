@@ -12,11 +12,18 @@ class AliDownloader():
     def __init__(self, driver):
         self.url = None
         self.driver = driver
-
+        '"productSKUPropertyList",   "skuPriceList",     "warrantyDetailJson"'
+        self.properlist = {
+            "type": "",  # color, size, colorsize
+            "color": [],  # ("propertyValueDisplayName","propertyValueName","propertyValueId")
+            "size": [],  # ("propertyValueDisplayName","propertyValueName","propertyValueId")
+            "sku": [],    #("skuPropIds", "actSkuMultiCurrencyDisplayPrice","skuCalPrice")
+        }
     def set_product_url(self, url):
         pattern = r'http[s]?://www.aliexpress.com.+?\d+\.html'
         if re.match(pattern, url):
             self.url = url
+            self.driver.get(url)
         else:
             raise Exception("product url not match! exp: http[s]?://www.aliexpress.com.+?\d+\.html")
 
@@ -48,7 +55,7 @@ class AliDownloader():
 
     def get_title(self):
         ele = self.driver.find_element_by_class_name('product-title')
-        return ele
+        return ele.text
 
     def get_properties(self):
         pattern = '"props":(.+])'
@@ -77,13 +84,6 @@ class AliDownloader():
             raise Exception("url is not set")
 
     def get_propertyValueDisplayName(self):
-        '"productSKUPropertyList",   "skuPriceList",     "warrantyDetailJson"'
-        properlist={
-            "type":"",#color, size, colorsize
-            "color":[],#("propertyValueDisplayName","propertyValueName","propertyValueId")
-            "size":[],#("propertyValueDisplayName","propertyValueName","propertyValueId")
-            "sku":[]
-        }
         page_source = self.driver.page_source
         productSKUPropertyList_re = re.compile('"productSKUPropertyList":(\[{.+?}\]),')
         skuPrice_re = re.compile('"skuPriceList":(\[{.+?}\])')
@@ -95,20 +95,25 @@ class AliDownloader():
             skuPriceList = json.loads(res.groups()[0])
         self._color_size(productSKUPropertyList)
         self._sku(skuPriceList)
-        return properlist
 
     def _color_size(self,productlist=[]):
         length = len(productlist)
         if length==2:
+            self.properlist['type']='colorsize'
             property1 = productlist[0].get('skuPropertyName')
             property2 = productlist[1].get('skuPropertyName')
             if property1=="Color":
-                pass
+                print('该产品有%d个颜色'%(len(productlist[0]['skuPropertyValues'])))
+                for color in productlist[0]['skuPropertyValues']:
+                    self.properlist['color'].append((color['propertyValueDisplayName'], color["propertyValueName"], color['propertyValueId']))
             if property2=="Size":
-                pass
+                print('该产品有%d个尺码' % (len(productlist[1]['skuPropertyValues'])))
+                for size in productlist[1]['skuPropertyValues']:
+                    self.properlist['size'].append((size['propertyValueDisplayName'], size["propertyValueName"], size['propertyValueId']))
 
     def _sku(self, skuPriceList):
-        pass
+        for sku in skuPriceList:
+            self.properlist['sku'].append((sku['skuPropIds'],sku['skuVal']['actSkuMultiCurrencyDisplayPrice'], sku['skuVal']['skuCalPrice']))
 
 
 
